@@ -1,9 +1,9 @@
 package codegen
 
 import (
-	"github.com/ronaksoft/ronydesc/desc"
 	"reflect"
 
+	"github.com/ronaksoft/ronydesc/desc"
 	"github.com/ronaksoft/ronydesc/internal/gen"
 )
 
@@ -59,6 +59,7 @@ func (arg *Arg) extractContract(c gen.Contract) Contract {
 	}
 
 	arg.contracts[contract.name] = contract
+
 	return contract
 }
 
@@ -100,7 +101,7 @@ func (arg *Arg) NumMessages() int {
 }
 
 func (arg *Arg) Services() []Service {
-	var arr []Service
+	var arr = make([]Service, 0, len(arg.services))
 	for _, v := range arg.services {
 		arr = append(arr, v)
 	}
@@ -109,7 +110,7 @@ func (arg *Arg) Services() []Service {
 }
 
 func (arg *Arg) Contracts() []Contract {
-	var arr []Contract
+	var arr = make([]Contract, 0, len(arg.contracts))
 	for _, v := range arg.contracts {
 		arr = append(arr, v)
 	}
@@ -118,7 +119,7 @@ func (arg *Arg) Contracts() []Contract {
 }
 
 func (arg *Arg) Messages() []Message {
-	var arr []Message
+	var arr = make([]Message, 0, len(arg.messages))
 	for _, v := range arg.messages {
 		arr = append(arr, v)
 	}
