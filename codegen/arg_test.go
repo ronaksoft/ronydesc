@@ -1,6 +1,7 @@
 package codegen_test
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/ronaksoft/ronydesc/codegen"
@@ -8,5 +9,8 @@ import (
 )
 
 func TestGen(t *testing.T) {
-	codegen.Generate()
+	arg := codegen.Generate()
+	for _, m := range arg.Messages() {
+		fmt.Println(m.String())
+	}
 }

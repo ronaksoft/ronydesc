@@ -1,13 +1,14 @@
 package codegen
 
 import (
+	"github.com/ronaksoft/ronydesc/desc"
 	"reflect"
 
 	"github.com/ronaksoft/ronydesc/internal/gen"
 )
 
 func Generate() *Arg {
-	arg := &Arg{}
+	arg := newArg()
 	gen.ForEachService(
 		func(s gen.Service) {
 			arg.extractService(s)
@@ -21,6 +22,14 @@ type Arg struct {
 	services  map[string]Service
 	contracts map[string]Contract
 	messages  map[string]Message
+}
+
+func newArg() *Arg {
+	return &Arg{
+		services:  map[string]Service{},
+		contracts: map[string]Contract{},
+		messages:  map[string]Message{},
+	}
 }
 
 func (arg *Arg) extractService(s gen.Service) Service {
@@ -61,6 +70,9 @@ func (arg *Arg) extractMessage(m interface{}) Message {
 	}
 	for i := 0; i < rType.NumField(); i++ {
 		field := rType.Field(i)
+		if field.Type == reflect.TypeOf(desc.Message{}) {
+			continue
+		}
 		msg.fields = append(
 			msg.fields,
 			Field{
@@ -73,4 +85,43 @@ func (arg *Arg) extractMessage(m interface{}) Message {
 	arg.messages[msg.name] = msg
 
 	return msg
+}
+
+func (arg *Arg) NumServices() int {
+	return len(arg.services)
+}
+
+func (arg *Arg) NumContracts() int {
+	return len(arg.contracts)
+}
+
+func (arg *Arg) NumMessages() int {
+	return len(arg.messages)
+}
+
+func (arg *Arg) Services() []Service {
+	var arr []Service
+	for _, v := range arg.services {
+		arr = append(arr, v)
+	}
+
+	return arr
+}
+
+func (arg *Arg) Contracts() []Contract {
+	var arr []Contract
+	for _, v := range arg.contracts {
+		arr = append(arr, v)
+	}
+
+	return arr
+}
+
+func (arg *Arg) Messages() []Message {
+	var arr []Message
+	for _, v := range arg.messages {
+		arr = append(arr, v)
+	}
+
+	return arr
 }
