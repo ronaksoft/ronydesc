@@ -1,7 +1,7 @@
 package codegen_test
 
 import (
-	"fmt"
+	"os"
 	"testing"
 
 	"github.com/ronaksoft/ronydesc/codegen"
@@ -9,8 +9,14 @@ import (
 )
 
 func TestGen(t *testing.T) {
-	arg := codegen.Generate()
-	for _, m := range arg.Messages() {
-		fmt.Println(m.String())
+	cfg := codegen.Config{
+		DstFileName:   "sample.gen.go",
+		DstFolderPath: "./_hdd",
+		DstPkgName:    "sample",
+	}
+	_ = os.MkdirAll("./_hdd", os.ModePerm)
+
+	if err := codegen.Generate(cfg); err != nil {
+		t.Fatal(err)
 	}
 }

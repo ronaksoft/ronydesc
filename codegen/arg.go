@@ -7,21 +7,12 @@ import (
 	"github.com/ronaksoft/ronydesc/internal/gen"
 )
 
-func Generate() *Arg {
-	arg := newArg()
-	gen.ForEachService(
-		func(s gen.Service) {
-			arg.extractService(s)
-		},
-	)
-
-	return arg
-}
-
 type Arg struct {
 	services  map[string]Service
 	contracts map[string]Contract
 	messages  map[string]Message
+
+	PkgName string
 }
 
 func newArg() *Arg {

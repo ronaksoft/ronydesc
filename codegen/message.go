@@ -35,6 +35,10 @@ func (m Message) Field(i int) Field {
 	return m.fields[i]
 }
 
+func (m Message) Fields() []Field {
+	return m.fields
+}
+
 func (m Message) String() string {
 	sb := strings.Builder{}
 	sb.WriteRune('{')

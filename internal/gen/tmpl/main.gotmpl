@@ -1,0 +1,21 @@
+package main
+
+// This code is auto-generated
+
+import (
+	"github.com/ronaksoft/ronydesc/codegen"
+	"text/template"
+	_ "{{.PkgPath}}"
+)
+
+func main() {
+    cfg := codegen.Config{
+        DstPkgName: "{{.DstPkgName}}",
+        DstFolderPath: "{{.DstFolderPath}}}",
+    }
+
+	err := codegen.Generate(cfg)
+    if err != nil {
+        panic(err)
+    }
+}
