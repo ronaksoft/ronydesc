@@ -5,7 +5,8 @@ import (
 	"testing"
 
 	"github.com/ronaksoft/ronydesc/codegen"
-	_ "github.com/ronaksoft/ronydesc/internal/example/ex1"
+	"github.com/ronaksoft/ronydesc/internal/example/ex1"
+	"github.com/ronaksoft/ronydesc/internal/example/ex2"
 )
 
 func TestGen(t *testing.T) {
@@ -16,7 +17,7 @@ func TestGen(t *testing.T) {
 	}
 	_ = os.MkdirAll("./_hdd", os.ModePerm)
 
-	if err := codegen.Generate(cfg); err != nil {
+	if err := codegen.Generate(cfg, ex1.ServiceA{}, ex2.ServiceB{}); err != nil {
 		t.Fatal(err)
 	}
 }

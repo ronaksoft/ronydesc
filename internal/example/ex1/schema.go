@@ -1,10 +1,18 @@
 package ex1
 
-import "github.com/ronaksoft/ronydesc/desc"
+import (
+	"github.com/ronaksoft/ronydesc/desc"
+	"github.com/ronaksoft/ronydesc/internal/example/msg"
+)
 
-var _ = desc.Service{
-	Name: "serviceA",
-	Contracts: []desc.Contract{
+type ServiceA struct{}
+
+func (s ServiceA) Name() string {
+	return "serverA"
+}
+
+func (s ServiceA) Contracts() []desc.Contract {
+	return []desc.Contract{
 		{
 			Rests: []desc.REST{
 				{
@@ -13,8 +21,8 @@ var _ = desc.Service{
 				},
 			},
 			Name:   "Echo",
-			Input:  EchoRequest{},
-			OutPut: EchoResponse{},
+			Input:  msg.EchoRequest{},
+			OutPut: msg.EchoResponse{},
 		},
-	},
-}.Register()
+	}
+}

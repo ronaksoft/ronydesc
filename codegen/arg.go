@@ -4,7 +4,6 @@ import (
 	"reflect"
 
 	"github.com/ronaksoft/ronydesc/desc"
-	"github.com/ronaksoft/ronydesc/internal/gen"
 )
 
 type Arg struct {
@@ -23,22 +22,21 @@ func newArg() *Arg {
 	}
 }
 
-func (arg *Arg) extractService(s gen.Service) Service {
+func (arg *Arg) extractService(s desc.Service) Service {
 	svc := Service{
-		name: s.GetName(),
+		pkgPath: reflect.TypeOf(s).PkgPath(),
+		name:    s.Name(),
 	}
-	s.ForEachContract(
-		func(contract gen.Contract) {
-			svc.contracts = append(svc.contracts, arg.extractContract(contract))
-		},
-	)
+	for _, c := range s.Contracts() {
+		svc.contracts = append(svc.contracts, arg.extractContract(c))
+	}
 
 	arg.services[svc.name] = svc
 
 	return svc
 }
 
-func (arg *Arg) extractContract(c gen.Contract) Contract {
+func (arg *Arg) extractContract(c desc.Contract) Contract {
 	contract := Contract{
 		name:   c.GetName(),
 		input:  arg.extractMessage(c.GetInput()),
@@ -46,8 +44,8 @@ func (arg *Arg) extractContract(c gen.Contract) Contract {
 	}
 	for _, r := range c.GetREST() {
 		contract.rests = append(contract.rests, REST{
-			Path:   r.GetPath(),
-			Method: r.GetMethod(),
+			Path:   r.Path,
+			Method: r.Method,
 		})
 	}
 
@@ -60,7 +58,8 @@ func (arg *Arg) extractMessage(m interface{}) Message {
 	rType := reflect.TypeOf(m)
 
 	msg := Message{
-		name: rType.Name(),
+		name:    rType.Name(),
+		pkgPath: rType.PkgPath(),
 	}
 	for i := 0; i < rType.NumField(); i++ {
 		field := rType.Field(i)

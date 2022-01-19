@@ -3,6 +3,7 @@ package codegen
 type Service struct {
 	name      string
 	contracts []Contract
+	pkgPath   string
 }
 
 func (s Service) Name() string {

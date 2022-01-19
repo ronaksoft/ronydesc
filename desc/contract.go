@@ -1,7 +1,5 @@
 package desc
 
-import "github.com/ronaksoft/ronydesc/internal/gen"
-
 type Contract struct {
 	Name   string
 	Input  IMessage
@@ -21,24 +19,11 @@ func (c Contract) GetOutput() interface{} {
 	return c.OutPut
 }
 
-func (c Contract) GetREST() []gen.REST {
-	var arr = make([]gen.REST, 0, len(c.Rests))
-	for _, v := range c.Rests {
-		arr = append(arr, v)
-	}
-
-	return arr
+func (c Contract) GetREST() []REST {
+	return c.Rests
 }
 
 type REST struct {
 	Method string
 	Path   string
-}
-
-func (r REST) GetMethod() string {
-	return r.Method
-}
-
-func (r REST) GetPath() string {
-	return r.Path
 }

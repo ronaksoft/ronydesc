@@ -19,8 +19,9 @@ func (f Field) Type() string {
 }
 
 type Message struct {
-	name   string
-	fields []Field
+	name    string
+	pkgPath string
+	fields  []Field
 }
 
 func (m Message) Name() string {

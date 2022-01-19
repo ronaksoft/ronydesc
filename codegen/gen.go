@@ -6,27 +6,28 @@ import (
 	"path/filepath"
 	"text/template"
 
-	"github.com/ronaksoft/ronydesc/internal/gen"
+	"github.com/ronaksoft/ronydesc/desc"
 )
 
 //go:embed templates/*
 var stdTemplatesFS embed.FS
 
-func Generate(cfg Config) error {
-	arg := generateTemplateArg()
+func Generate(cfg Config, services ...desc.Service) error {
+	arg := generateTemplateArg(services...)
 	arg.PkgName = cfg.DstPkgName
 
-	dirEntries, err := stdTemplatesFS.ReadDir("templates")
-	if err != nil {
-		return err
-	}
+	//dirEntries, err := stdTemplatesFS.ReadDir("templates")
+	//if err != nil {
+	//	return err
+	//}
+	//
+	//for _, de := range dirEntries {
+	//	if de.IsDir() {
+	//		continue
+	//	}
+	//	stdTemplatesFS.Open(de.Name())
+	//}
 
-	for _, de := range dirEntries {
-		if de.IsDir() {
-			continue
-		}
-		stdTemplatesFS.Open(de.Name())
-	}
 	out, err := os.Create(filepath.Join(cfg.DstFolderPath, cfg.DstFileName))
 	if err != nil {
 		return err
@@ -45,13 +46,11 @@ func Generate(cfg Config) error {
 	return out.Close()
 }
 
-func generateTemplateArg() *Arg {
+func generateTemplateArg(services ...desc.Service) *Arg {
 	arg := newArg()
-	gen.ForEachService(
-		func(s gen.Service) {
-			arg.extractService(s)
-		},
-	)
+	for _, s := range services {
+		arg.extractService(s)
+	}
 
 	return arg
 }
