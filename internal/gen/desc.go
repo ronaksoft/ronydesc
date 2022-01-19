@@ -9,7 +9,7 @@ type Contract interface {
 	GetName() string
 	GetInput() interface{}
 	GetOutput() interface{}
-	GetREST() REST
+	GetREST() []REST
 }
 
 type REST interface {

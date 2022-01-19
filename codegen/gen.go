@@ -10,18 +10,29 @@ import (
 )
 
 //go:embed templates/*
-var templates embed.FS
+var stdTemplatesFS embed.FS
 
 func Generate(cfg Config) error {
 	arg := generateTemplateArg()
 	arg.PkgName = cfg.DstPkgName
 
+	dirEntries, err := stdTemplatesFS.ReadDir("templates")
+	if err != nil {
+		return err
+	}
+
+	for _, de := range dirEntries {
+		if de.IsDir() {
+			continue
+		}
+		stdTemplatesFS.Open(de.Name())
+	}
 	out, err := os.Create(filepath.Join(cfg.DstFolderPath, cfg.DstFileName))
 	if err != nil {
 		return err
 	}
 
-	t, err := template.ParseFS(templates, "templates/*.gotmpl")
+	t, err := template.ParseFS(stdTemplatesFS, "templates/*.gotmpl")
 	if err != nil {
 		return err
 	}

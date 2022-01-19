@@ -6,7 +6,7 @@ type Contract struct {
 	Name   string
 	Input  IMessage
 	OutPut IMessage
-	Rest   *REST
+	Rests  []REST
 }
 
 func (c Contract) GetName() string {
@@ -21,8 +21,13 @@ func (c Contract) GetOutput() interface{} {
 	return c.OutPut
 }
 
-func (c Contract) GetREST() gen.REST {
-	return c.Rest
+func (c Contract) GetREST() []gen.REST {
+	var arr = make([]gen.REST, 0, len(c.Rests))
+	for _, v := range c.Rests {
+		arr = append(arr, v)
+	}
+
+	return arr
 }
 
 type REST struct {

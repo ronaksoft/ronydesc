@@ -44,9 +44,11 @@ func (arg *Arg) extractContract(c gen.Contract) Contract {
 		input:  arg.extractMessage(c.GetInput()),
 		output: arg.extractMessage(c.GetOutput()),
 	}
-	if c.GetREST() != nil {
-		contract.restPath = c.GetREST().GetPath()
-		contract.restMethod = c.GetREST().GetPath()
+	for _, r := range c.GetREST() {
+		contract.rests = append(contract.rests, REST{
+			Path:   r.GetPath(),
+			Method: r.GetMethod(),
+		})
 	}
 
 	arg.contracts[contract.name] = contract

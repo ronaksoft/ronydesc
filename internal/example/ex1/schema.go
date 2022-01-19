@@ -6,9 +6,11 @@ var _ = desc.Service{
 	Name: "serviceA",
 	Contracts: []desc.Contract{
 		{
-			Rest: &desc.REST{
-				Method: "GET",
-				Path:   "/echo/:randomID",
+			Rests: []desc.REST{
+				{
+					Method: "GET",
+					Path:   "/echo/:randomID",
+				},
 			},
 			Name:   "Echo",
 			Input:  EchoRequest{},
