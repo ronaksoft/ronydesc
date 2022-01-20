@@ -4,20 +4,23 @@ package main
 
 import (
 	"github.com/ronaksoft/ronydesc/codegen"
-    "github.com/ronaksoft/ronydesc/codeparse"
 	"github.com/ronaksoft/ronydesc/desc"
-    "{{.ImportPath}}"
+    x "{{.ImportPath}}"
 )
 
 func main() {
     cfg := codegen.Config{
         DstPkgName: "{{.DstPkgName}}",
-        DstFolderPath: "{{.DstFolderPath}}}",
+        DstFolderPath: "{{.DstFolderPath}}",
         Messages: []desc.IMessage{
-            {{join .Messages ","}}
+            {{- range .Messages}}
+                x.{{.}},
+            {{- end }}
         },
-        Services: []desc.Service{
-            {{join .Services ","}}
+        Services: []desc.IService{
+            {{- range .Services -}}
+                x.{{.}},
+            {{- end }}
         },
     }
 

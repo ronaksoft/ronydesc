@@ -10,6 +10,7 @@ import (
 	"strings"
 	"text/template"
 
+	"github.com/ronaksoft/ronydesc/codegen"
 	"github.com/ronaksoft/ronydesc/codeparse"
 	"github.com/spf13/cobra"
 )
@@ -57,13 +58,21 @@ var RootCmd = &cobra.Command{
 		}
 
 		cfg := Config{}
-		cfg.ImportPath = filepath.Join(basePkgPath, srcFolderPath)
+		cfg.ImportPath = fmt.Sprintf("%s/%s", strings.TrimRight(basePkgPath, "/"), srcFolderPath)
 		cfg.DstPkgName, _ = cmd.Flags().GetString("dstPkgName")
 		cfg.DstFolderPath, _ = cmd.Flags().GetString("dstFolderPath")
 		cfg.Messages = messages
 		cfg.Services = services
 
-		err = template.Must(template.ParseFS(generatorTemplate, "main.gotmpl")).
+		tplBytes, err := generatorTemplate.ReadFile("main.gotmpl")
+		if err != nil {
+			return err
+		}
+		err = template.Must(
+			template.New("gen-rony").
+				Funcs(codegen.TemplateFunctions).
+				Parse(string(tplBytes)),
+		).
 			Execute(out, cfg)
 		if err != nil {
 			return err
