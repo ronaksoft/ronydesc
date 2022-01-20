@@ -17,12 +17,14 @@ type IServiceA interface {
 	Echo(ctx *ronykit.Context)
 }
 
-// serviceaWrapper
-type serviceaWrapper struct {
-	svc IServiceA
+// serviceAWrapper
+type serviceAWrapper struct {
+	svc  IServiceA
+	pre  []ronykit.Handler
+	post []ronykit.Handler
 }
 
-func (x serviceaWrapper) echoContract() ronykit.Contract {
+func (x serviceAWrapper) echoContract() ronykit.Contract {
 	return contract.New().
 		SetSelector(
 			rest.Route("GET", "/echo/:randomID").
@@ -35,16 +37,27 @@ func (x serviceaWrapper) echoContract() ronykit.Contract {
 		SetHandler(x.svc.Echo)
 }
 
-func (x serviceaWrapper) Service() ronykit.Service {
-	return service.New("ServiceA").
-		AddContract(x.echoContract()).
-		SetPreHandlers()
+func (x *serviceAWrapper) SetPreHandler(h ...ronykit.Handler) *serviceAWrapper {
+	x.pre = append(x.pre, h...)
+
+	return x
 }
 
-func NewServiceA(svc IServiceA) ronykit.Service {
-	s := &serviceaWrapper{
+func (x *serviceAWrapper) SetPostHandler(h ...ronykit.Handler) *serviceAWrapper {
+	x.post = append(x.post, h...)
+
+	return x
+}
+
+func (x serviceAWrapper) Service() ronykit.Service {
+	return service.New("ServiceA").
+		AddContract(x.echoContract()).
+		SetPreHandlers(x.pre...).
+		SetPostHandlers(x.post...)
+}
+
+func NewServiceA(svc IServiceA) *serviceAWrapper {
+	return &serviceAWrapper{
 		svc: svc,
 	}
-
-	return s.Service()
 }

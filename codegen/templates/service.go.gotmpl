@@ -24,6 +24,8 @@ import (
     // {{$wrapperName}}
     type {{$wrapperName}} struct {
         svc I{{.Name}}
+        pre []ronykit.Handler
+        post []ronykit.Handler
     }
 
     {{range .Contracts}}
@@ -44,20 +46,32 @@ import (
         }
     {{end}}
 
+
+    func (x *{{$wrapperName}}) SetPreHandler(h ...ronykit.Handler) *{{$wrapperName}} {
+        x.pre = append(x.pre, h...)
+
+        return x
+    }
+
+    func (x *{{$wrapperName}}) SetPostHandler(h ...ronykit.Handler) *{{$wrapperName}} {
+        x.post = append(x.post, h...)
+
+        return x
+    }
+
     func (x {{$wrapperName}}) Service() ronykit.Service {
         return service.New("{{.Name}}").
             {{range .Contracts}}
                 AddContract(x.{{camel .Name}}Contract()).
             {{end}}
-            SetPreHandlers()
+            SetPreHandlers(x.pre...).
+            SetPostHandlers(x.post...)
     }
 
-    func New{{.Name}}(svc I{{.Name}}) ronykit.Service {
-        s := &{{$wrapperName}}{
+    func New{{.Name}}(svc I{{.Name}}) *{{$wrapperName}} {
+        return &{{$wrapperName}}{
             svc: svc,
         }
-
-        return s.Service()
     }
 {{end}}
 
