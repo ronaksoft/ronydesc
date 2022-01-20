@@ -40,3 +40,11 @@ func (x serviceaWrapper) Service() ronykit.Service {
 		AddContract(x.echoContract()).
 		SetPreHandlers()
 }
+
+func NewServiceA(svc IServiceA) ronykit.Service {
+	s := &serviceaWrapper{
+		svc: svc,
+	}
+
+	return s.Service()
+}

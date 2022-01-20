@@ -52,5 +52,12 @@ import (
             SetPreHandlers()
     }
 
+    func New{{.Name}}(svc I{{.Name}}) ronykit.Service {
+        s := &{{$wrapperName}}{
+            svc: svc,
+        }
+
+        return s.Service()
+    }
 {{end}}
 
