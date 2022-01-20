@@ -27,7 +27,7 @@ func Generate(cfg Config) error {
 
 	_ = os.MkdirAll(cfg.DstFolderPath, os.ModePerm|644)
 
-	if !cfg.ExternalTemplatesOnly {
+	if !cfg.ExternalTemplatesOnly || len(cfg.ExternalTemplates) == 0 {
 		dirEntries, err := stdTemplatesFS.ReadDir("templates")
 		if err != nil {
 			return err
@@ -80,7 +80,7 @@ func Generate(cfg Config) error {
 }
 
 func getFilename(name string) string {
-	return fmt.Sprintf("%s", strings.TrimSuffix(filepath.Base(name), filepath.Ext(name)))
+	return fmt.Sprintf("gen.%s", strings.TrimSuffix(filepath.Base(name), filepath.Ext(name)))
 }
 
 func getPkgPathSuffix(base, pkgPath string) string {
