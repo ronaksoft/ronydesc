@@ -4,14 +4,19 @@ package main
 
 import (
 	"github.com/ronaksoft/ronydesc/codegen"
-	"text/template"
-	_ "{{.PkgPath}}"
+	"github.com/ronaksoft/ronydesc/desc"
 )
 
 func main() {
     cfg := codegen.Config{
         DstPkgName: "{{.DstPkgName}}",
         DstFolderPath: "{{.DstFolderPath}}}",
+        Messages: []desc.IMessage{
+            {{.Messages}}
+        },
+        Services: []desc.Service{
+            {{.Services}}
+        },
     }
 
 	err := codegen.Generate(cfg)

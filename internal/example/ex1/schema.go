@@ -2,13 +2,12 @@ package ex1
 
 import (
 	"github.com/ronaksoft/ronydesc/desc"
-	"github.com/ronaksoft/ronydesc/internal/example/msg"
 )
 
 type ServiceA struct{}
 
 func (s ServiceA) Name() string {
-	return "serverA"
+	return "serviceA"
 }
 
 func (s ServiceA) Contracts() []desc.Contract {
@@ -21,8 +20,22 @@ func (s ServiceA) Contracts() []desc.Contract {
 				},
 			},
 			Name:   "Echo",
-			Input:  msg.EchoRequest{},
-			OutPut: msg.EchoResponse{},
+			Input:  EchoRequest{},
+			OutPut: EchoResponse{},
 		},
 	}
+}
+
+type EchoRequest struct {
+	desc.Message
+
+	RandomID  string `json:"randomId"`
+	RandomInt int32  `json:"randomInt"`
+}
+
+type EchoResponse struct {
+	desc.Message
+
+	RandomID  string `json:"randomId"`
+	RandomInt int32  `json:"randomInt"`
 }

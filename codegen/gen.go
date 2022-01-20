@@ -2,55 +2,59 @@ package codegen
 
 import (
 	"embed"
+	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 	"text/template"
-
-	"github.com/ronaksoft/ronydesc/desc"
 )
 
 //go:embed templates/*
 var stdTemplatesFS embed.FS
 
-func Generate(cfg Config, services ...desc.Service) error {
-	arg := generateTemplateArg(services...)
-	arg.PkgName = cfg.DstPkgName
-
-	//dirEntries, err := stdTemplatesFS.ReadDir("templates")
-	//if err != nil {
-	//	return err
-	//}
-	//
-	//for _, de := range dirEntries {
-	//	if de.IsDir() {
-	//		continue
-	//	}
-	//	stdTemplatesFS.Open(de.Name())
-	//}
-
-	out, err := os.Create(filepath.Join(cfg.DstFolderPath, cfg.DstFileName))
-	if err != nil {
-		return err
+func Generate(cfg Config) error {
+	arg := newArg(cfg.DstPkgName)
+	for _, m := range cfg.Messages {
+		arg.extractMessage(m)
 	}
-
-	t, err := template.ParseFS(stdTemplatesFS, "templates/*.gotmpl")
-	if err != nil {
-		return err
-	}
-
-	err = t.Funcs(TemplateFunctions).Execute(out, arg)
-	if err != nil {
-		return err
-	}
-
-	return out.Close()
-}
-
-func generateTemplateArg(services ...desc.Service) *Arg {
-	arg := newArg()
-	for _, s := range services {
+	for _, s := range cfg.Services {
 		arg.extractService(s)
 	}
 
-	return arg
+	dirEntries, err := stdTemplatesFS.ReadDir("templates")
+	if err != nil {
+		return err
+	}
+
+	for _, de := range dirEntries {
+		if de.IsDir() {
+			continue
+		}
+
+		t, err := template.ParseFS(stdTemplatesFS, fmt.Sprintf("templates/%s", de.Name()))
+		if err != nil {
+			return err
+		}
+
+		out, err := os.Create(filepath.Join(cfg.DstFolderPath, getFilename(de.Name())))
+		if err != nil {
+			return err
+		}
+		err = t.Funcs(TemplateFunctions).Execute(out, arg)
+		if err != nil {
+			return err
+		}
+
+		_ = out.Close()
+	}
+
+	return nil
+}
+
+func getFilename(name string) string {
+	return fmt.Sprintf("%s", strings.TrimSuffix(filepath.Base(name), filepath.Ext(name)))
+}
+
+func getPkgPathSuffix(base, pkgPath string) string {
+	return strings.TrimPrefix(pkgPath, base)
 }

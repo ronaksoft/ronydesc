@@ -5,19 +5,24 @@ import (
 	"testing"
 
 	"github.com/ronaksoft/ronydesc/codegen"
+	"github.com/ronaksoft/ronydesc/desc"
 	"github.com/ronaksoft/ronydesc/internal/example/ex1"
-	"github.com/ronaksoft/ronydesc/internal/example/ex2"
 )
 
 func TestGen(t *testing.T) {
-	cfg := codegen.Config{
-		DstFileName:   "sample.gen.go",
-		DstFolderPath: "./_hdd",
-		DstPkgName:    "sample",
+	input := codegen.Config{
+		DstFolderPath: "./hdd",
+		DstPkgName:    "ex1",
+		Messages: []desc.IMessage{
+			ex1.EchoRequest{}, ex1.EchoResponse{},
+		},
+		Services: []desc.Service{
+			ex1.ServiceA{},
+		},
 	}
-	_ = os.MkdirAll("./_hdd", os.ModePerm)
+	_ = os.MkdirAll(input.DstFolderPath, os.ModePerm)
 
-	if err := codegen.Generate(cfg, ex1.ServiceA{}, ex2.ServiceB{}); err != nil {
+	if err := codegen.Generate(input); err != nil {
 		t.Fatal(err)
 	}
 }

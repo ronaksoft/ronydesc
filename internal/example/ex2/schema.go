@@ -2,7 +2,6 @@ package ex2
 
 import (
 	"github.com/ronaksoft/ronydesc/desc"
-	"github.com/ronaksoft/ronydesc/internal/example/msg"
 )
 
 type ServiceB struct{}
@@ -25,8 +24,21 @@ func (s ServiceB) Contracts() []desc.Contract {
 				},
 			},
 			Name:   "Sum",
-			Input:  msg.SumRequest{},
-			OutPut: msg.SumResponse{},
+			Input:  SumRequest{},
+			OutPut: SumResponse{},
 		},
 	}
+}
+
+type SumRequest struct {
+	desc.Message
+
+	Val1 int32 `json:"val1"`
+	Val2 int32 `json:"val2"`
+}
+
+type SumResponse struct {
+	desc.Message
+
+	Sum int32 `json:"sum"`
 }

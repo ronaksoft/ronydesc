@@ -32,6 +32,10 @@ func (m Message) NumFields() int {
 	return len(m.fields)
 }
 
+func (m Message) PkgPath() string {
+	return m.pkgPath
+}
+
 func (m Message) Field(i int) Field {
 	return m.fields[i]
 }

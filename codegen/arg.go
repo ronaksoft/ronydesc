@@ -14,8 +14,9 @@ type Arg struct {
 	PkgName string
 }
 
-func newArg() *Arg {
+func newArg(pkgName string) *Arg {
 	return &Arg{
+		PkgName:   pkgName,
 		services:  map[string]Service{},
 		contracts: map[string]Contract{},
 		messages:  map[string]Message{},
