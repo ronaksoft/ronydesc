@@ -7,7 +7,7 @@ import (
 	"go/token"
 )
 
-func ExtractMessages(filename string) (messages, services []string, err error) {
+func Extract(filename string) (messages, services []string, err error) {
 	fset := token.NewFileSet()
 	f, err := parser.ParseFile(fset, filename, nil, parser.AllErrors)
 	if err != nil {

@@ -3,8 +3,11 @@ package main
 import (
 	"embed"
 	"fmt"
+	"io/fs"
 	"os"
 	"os/exec"
+	"path/filepath"
+	"strings"
 	"text/template"
 
 	"github.com/ronaksoft/ronydesc/codeparse"
@@ -15,12 +18,35 @@ import (
 var generatorTemplate embed.FS
 
 var RootCmd = &cobra.Command{
-	Use: "rony",
+	Use: "ronydesc",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		messages, services, err := codeparse.ExtractMessages("./internal/example/ex1/schema.go")
+		srcFolderPath, _ := cmd.Flags().GetString("srcFolderPath")
+		basePkgPath, _ := cmd.Flags().GetString("basePkgPath")
+
+		var messages, services []string
+		err := filepath.Walk(
+			srcFolderPath,
+			func(path string, info fs.FileInfo, err error) error {
+				if info.IsDir() {
+					return nil
+				}
+				if !strings.HasSuffix(info.Name(), ".go") {
+					return nil
+				}
+				m, s, err := codeparse.Extract(path)
+				if err != nil {
+					return err
+				}
+				messages = append(messages, m...)
+				services = append(services, s...)
+
+				return nil
+			},
+		)
 		if err != nil {
 			return err
 		}
+
 		fmt.Println("Messages:", messages)
 		fmt.Println("Services:", services)
 
@@ -31,8 +57,7 @@ var RootCmd = &cobra.Command{
 		}
 
 		cfg := Config{}
-		cfg.BasePkgPath, _ = cmd.Flags().GetString("basePkgPath")
-		cfg.SrcFolderPath, _ = cmd.Flags().GetString("srcFolderPath")
+		cfg.ImportPath = filepath.Join(basePkgPath, srcFolderPath)
 		cfg.DstPkgName, _ = cmd.Flags().GetString("dstPkgName")
 		cfg.DstFolderPath, _ = cmd.Flags().GetString("dstFolderPath")
 		cfg.Messages = messages
