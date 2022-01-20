@@ -7,6 +7,7 @@ package codegen
 import (
 	"errors"
 	"fmt"
+	"github.com/ronaksoft/ronydesc/internal/utils"
 	"go/token"
 	"path/filepath"
 	"reflect"
@@ -27,9 +28,9 @@ var (
 		"append":      reflect.Append,
 		"appends":     reflect.AppendSlice,
 		"order":       order,
-		"camel":       camel,
-		"snake":       snake,
-		"pascal":      pascal,
+		"camel":       utils.ToLowerCamel,
+		"snake":       utils.ToSnake,
+		"pascal":      utils.ToCamel,
 		"xrange":      xrange,
 		"receiver":    receiver,
 		"plural":      plural,
@@ -82,52 +83,6 @@ func plural(name string) string {
 	}
 
 	return p
-}
-
-func isSeparator(r rune) bool {
-	return r == '_' || r == '-' || unicode.IsSpace(r)
-}
-
-func pascalWords(words []string) string {
-	for i, w := range words {
-		upper := strings.ToUpper(w)
-		if _, ok := acronyms[upper]; ok {
-			words[i] = upper
-		} else {
-			words[i] = rules.Capitalize(w)
-		}
-	}
-
-	return strings.Join(words, "")
-}
-
-// pascal converts the given name into a PascalCase.
-//
-//	user_info 	=> UserInfo
-//	full_name 	=> FullName
-//	user_id   	=> UserID
-//	full-admin	=> FullAdmin
-//
-func pascal(s string) string {
-	words := strings.FieldsFunc(s, isSeparator)
-
-	return pascalWords(words)
-}
-
-// camel converts the given name into a camelCase.
-//
-//	user_info  => userInfo
-//	full_name  => fullName
-//	user_id    => userID
-//	full-admin => fullAdmin
-//
-func camel(s string) string {
-	words := strings.FieldsFunc(s, isSeparator)
-	if len(words) == 1 {
-		return strings.ToLower(words[0])
-	}
-
-	return strings.ToLower(words[0]) + pascalWords(words[1:])
 }
 
 // snake converts the given struct or field name into a snake_case.
