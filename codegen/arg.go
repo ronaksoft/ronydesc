@@ -1,6 +1,7 @@
 package codegen
 
 import (
+	"fmt"
 	"reflect"
 
 	"github.com/ronaksoft/ronydesc/desc"
@@ -70,11 +71,19 @@ func (arg *Arg) extractMessage(m interface{}) Message {
 			continue
 		}
 
+		var typ string
+		switch field.Type.Kind() {
+		case reflect.Slice:
+			typ = fmt.Sprintf("[]%s", field.Type.Elem().Name())
+		default:
+			typ = field.Type.Name()
+		}
+
 		msg.fields = append(
 			msg.fields,
 			Field{
 				name: field.Name,
-				typ:  field.Type.Name(),
+				typ:  typ,
 				tag:  field.Tag,
 			},
 		)
