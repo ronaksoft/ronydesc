@@ -1,7 +1,6 @@
 package {{.PkgName}}
 
 import (
-    "github.com/goccy/go-json"
     "github.com/ronaksoft/ronykit"
     "github.com/ronaksoft/ronykit/std/service"
     "github.com/ronaksoft/ronykit/std/contract"
@@ -17,7 +16,7 @@ import (
     // I{{.Name}} define the interface which MUST be implemented.
     type I{{.Name}} interface {
     {{range .Contracts -}}
-        {{.Name}}(in *{{.Input.Name}}, out *{{.Output.Name}})
+        {{.Name}}(ctx *ronykit.Context)
     {{end -}}
     }
 
@@ -41,25 +40,7 @@ import (
                         ),
                 {{- end }}
             ).
-            SetHandler(func(ctx *ronykit.Context) {
-                req := ctx.In().GetMsg().(*{{.Input.Name}})
-                res := &{{.Output.Name}}{}
-
-                x.svc.{{.Name}}(req, res)
-
-                out := ctx.Out()
-                ctx.In().WalkHdr(
-                    func(key string, val string) bool {
-                        out.SetHdr(key, val)
-
-                        return true
-                    },
-                )
-
-                out.
-                    SetMsg(res).
-                    Send()
-            })
+            SetHandler(x.svc.{{$contract.Name}})
         }
     {{end}}
 

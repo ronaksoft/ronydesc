@@ -1,7 +1,6 @@
 package service
 
 import (
-	"github.com/goccy/go-json"
 	"github.com/ronaksoft/ronykit"
 	"github.com/ronaksoft/ronykit/std/bundle/rest"
 	"github.com/ronaksoft/ronykit/std/contract"
@@ -15,7 +14,7 @@ import (
 
 // IServiceA define the interface which MUST be implemented.
 type IServiceA interface {
-	Echo(in *EchoRequest, out *EchoResponse)
+	Echo(ctx *ronykit.Context)
 }
 
 // serviceaWrapper
@@ -33,25 +32,7 @@ func (x serviceaWrapper) echoContract() ronykit.Contract {
 					},
 				),
 		).
-		SetHandler(func(ctx *ronykit.Context) {
-			req := ctx.In().GetMsg().(*EchoRequest)
-			res := &EchoResponse{}
-
-			x.svc.Echo(req, res)
-
-			out := ctx.Out()
-			ctx.In().WalkHdr(
-				func(key string, val string) bool {
-					out.SetHdr(key, val)
-
-					return true
-				},
-			)
-
-			out.
-				SetMsg(res).
-				Send()
-		})
+		SetHandler(x.svc.Echo)
 }
 
 func (x serviceaWrapper) Service() ronykit.Service {
