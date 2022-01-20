@@ -7,6 +7,8 @@ type Config struct {
 	DstFolderPath string
 	// DstPkgName is the generated package name.
 	DstPkgName string
+	// Tags is the list of the tags which will be extracted from the schema.
+	Tags []string
 	// Message is the list of the messages which will be generated
 	Messages []desc.IMessage
 	// Services is the list of the services which will be generated

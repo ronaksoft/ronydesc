@@ -12,11 +12,13 @@ type Arg struct {
 	messages  map[string]Message
 
 	PkgName string
+	Tags    []string
 }
 
-func newArg(pkgName string) *Arg {
+func newArg(pkgName string, tags []string) *Arg {
 	return &Arg{
 		PkgName:   pkgName,
+		Tags:      tags,
 		services:  map[string]Service{},
 		contracts: map[string]Contract{},
 		messages:  map[string]Message{},
@@ -67,11 +69,13 @@ func (arg *Arg) extractMessage(m interface{}) Message {
 		if field.Type == reflect.TypeOf(desc.Message{}) {
 			continue
 		}
+
 		msg.fields = append(
 			msg.fields,
 			Field{
 				name: field.Name,
 				typ:  field.Type.String(),
+				tag:  field.Tag,
 			},
 		)
 	}

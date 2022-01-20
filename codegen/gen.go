@@ -12,8 +12,12 @@ import (
 //go:embed templates/*
 var stdTemplatesFS embed.FS
 
+// Generate generates the template
 func Generate(cfg Config) error {
-	arg := newArg(cfg.DstPkgName)
+	if len(cfg.Tags) == 0 {
+		cfg.Tags = []string{"json", "proto", "paramName", "sql", "cql"}
+	}
+	arg := newArg(cfg.DstPkgName, cfg.Tags)
 	for _, m := range cfg.Messages {
 		arg.extractMessage(m)
 	}
@@ -21,25 +25,46 @@ func Generate(cfg Config) error {
 		arg.extractService(s)
 	}
 
-	dirEntries, err := stdTemplatesFS.ReadDir("templates")
-	if err != nil {
-		return err
-	}
+	_ = os.MkdirAll(cfg.DstFolderPath, os.ModePerm|644)
 
-	for _, de := range dirEntries {
-		if de.IsDir() {
-			continue
-		}
-
-		t, err := template.New(de.Name()).
-			Funcs(TemplateFunctions).
-			ParseFS(stdTemplatesFS, fmt.Sprintf("templates/%s", de.Name()))
+	if !cfg.ExternalTemplatesOnly {
+		dirEntries, err := stdTemplatesFS.ReadDir("templates")
 		if err != nil {
 			return err
 		}
 
-		_ = os.MkdirAll(cfg.DstFolderPath, os.ModePerm|644)
-		out, err := os.Create(filepath.Join(cfg.DstFolderPath, getFilename(de.Name())))
+		for _, de := range dirEntries {
+			if de.IsDir() {
+				continue
+			}
+
+			t, err := template.New(de.Name()).
+				Funcs(TemplateFunctions).
+				ParseFS(stdTemplatesFS, fmt.Sprintf("templates/%s", de.Name()))
+			if err != nil {
+				return err
+			}
+
+			out, err := os.Create(filepath.Join(cfg.DstFolderPath, getFilename(de.Name())))
+			if err != nil {
+				return err
+			}
+			err = t.Execute(out, arg)
+			if err != nil {
+				return err
+			}
+
+			_ = out.Close()
+		}
+	}
+
+	for _, templateFile := range cfg.ExternalTemplates {
+		t, err := template.New(templateFile).Funcs(TemplateFunctions).ParseFiles(templateFile)
+		if err != nil {
+			return err
+		}
+
+		out, err := os.Create(filepath.Join(cfg.DstFolderPath, getFilename(templateFile)))
 		if err != nil {
 			return err
 		}

@@ -2,12 +2,14 @@ package codegen
 
 import (
 	"fmt"
+	"reflect"
 	"strings"
 )
 
 type Field struct {
 	name string
 	typ  string
+	tag  reflect.StructTag
 }
 
 func (f Field) Name() string {
@@ -16,6 +18,10 @@ func (f Field) Name() string {
 
 func (f Field) Type() string {
 	return f.typ
+}
+
+func (f Field) Tag(name string) string {
+	return f.tag.Get(name)
 }
 
 type Message struct {
