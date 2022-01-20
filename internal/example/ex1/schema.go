@@ -4,7 +4,9 @@ import (
 	"github.com/ronaksoft/ronydesc/desc"
 )
 
-type ServiceA struct{}
+type ServiceA struct {
+	desc.Service
+}
 
 func (s ServiceA) Name() string {
 	return "serviceA"

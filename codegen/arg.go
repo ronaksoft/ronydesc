@@ -23,7 +23,7 @@ func newArg(pkgName string) *Arg {
 	}
 }
 
-func (arg *Arg) extractService(s desc.Service) Service {
+func (arg *Arg) extractService(s desc.IService) Service {
 	svc := Service{
 		pkgPath: reflect.TypeOf(s).PkgPath(),
 		name:    s.Name(),

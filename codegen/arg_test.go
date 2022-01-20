@@ -11,12 +11,12 @@ import (
 
 func TestGen(t *testing.T) {
 	input := codegen.Config{
-		DstFolderPath: "./hdd",
+		DstFolderPath: "./_hdd/ex1",
 		DstPkgName:    "ex1",
 		Messages: []desc.IMessage{
 			ex1.EchoRequest{}, ex1.EchoResponse{},
 		},
-		Services: []desc.Service{
+		Services: []desc.IService{
 			ex1.ServiceA{},
 		},
 	}

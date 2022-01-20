@@ -36,6 +36,7 @@ func Generate(cfg Config) error {
 			return err
 		}
 
+		_ = os.MkdirAll(cfg.DstFolderPath, os.ModePerm|644)
 		out, err := os.Create(filepath.Join(cfg.DstFolderPath, getFilename(de.Name())))
 		if err != nil {
 			return err
