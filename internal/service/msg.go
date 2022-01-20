@@ -24,10 +24,22 @@ func (x *EchoRequest) Marshal() ([]byte, error) {
 var _ ronykit.Message = (*EchoResponse)(nil)
 
 type EchoResponse struct {
-	RandomID  string `json:"randomId" `
-	RandomInt int32  `json:"randomInt" `
+	RandomID  string  `json:"randomId" `
+	RandomInt int32   `json:"randomInt" `
+	Sub       SubType `json:"sub" `
 }
 
 func (x *EchoResponse) Marshal() ([]byte, error) {
+	return json.Marshal(x)
+}
+
+var _ ronykit.Message = (*SubType)(nil)
+
+type SubType struct {
+	X string ``
+	Y int    ``
+}
+
+func (x *SubType) Marshal() ([]byte, error) {
 	return json.Marshal(x)
 }

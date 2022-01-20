@@ -74,7 +74,7 @@ func (arg *Arg) extractMessage(m interface{}) Message {
 			msg.fields,
 			Field{
 				name: field.Name,
-				typ:  field.Type.String(),
+				typ:  field.Type.Name(),
 				tag:  field.Tag,
 			},
 		)

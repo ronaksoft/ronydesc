@@ -38,6 +38,14 @@ type EchoRequest struct {
 type EchoResponse struct {
 	desc.Message
 
-	RandomID  string `json:"randomId"`
-	RandomInt int32  `json:"randomInt"`
+	RandomID  string  `json:"randomId"`
+	RandomInt int32   `json:"randomInt"`
+	Sub       SubType `json:"sub"`
+}
+
+type SubType struct {
+	desc.Message
+
+	X string
+	Y int
 }
