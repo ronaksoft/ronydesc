@@ -5,6 +5,7 @@ import (
     "github.com/ronaksoft/ronykit"
     "github.com/ronaksoft/ronykit/std/service"
     "github.com/ronaksoft/ronykit/std/contract"
+    "github.com/ronaksoft/ronykit/std/bundle/rest"
 )
 
 /*
@@ -21,17 +22,44 @@ import (
     }
 
     {{$wrapperName := print (camel .Name) "Wrapper"}}
-    // $wrapperName
+    // {{$wrapperName}}
     type {{$wrapperName}} struct {
         svc I{{.Name}}
     }
 
     {{range .Contracts}}
+        {{$contract := .}}
         func (x {{$wrapperName}}) {{camel .Name}}Contract() ronykit.Contract {
             return contract.New().
             SetSelector(
+                {{- range .Rests }}
+                    rest.Route("{{.Method}}", "{{.Path}}").
+                        WithFactory(
+                            func() ronykit.Message {
+                                return &{{$contract.Input.Name}}{}
+                            },
+                        ),
+                {{- end }}
             ).
-            SetHandler(x.svc.{{.Name}})
+            SetHandler(func(ctx *ronykit.Context) {
+                req := ctx.In().GetMsg().(*{{.Input.Name}})
+                res := &{{.Output.Name}}{}
+
+                x.svc.{{.Name}}(req, res)
+
+                out := ctx.Out()
+                ctx.In().WalkHdr(
+                    func(key string, val string) bool {
+                        out.SetHdr(key, val)
+
+                        return true
+                    },
+                )
+
+                out.
+                    SetMsg(res).
+                    Send()
+            })
         }
     {{end}}
 

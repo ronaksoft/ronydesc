@@ -9,7 +9,7 @@ type ServiceA struct {
 }
 
 func (s ServiceA) Name() string {
-	return "serviceA"
+	return "ServiceA"
 }
 
 func (s ServiceA) Contracts() []desc.Contract {

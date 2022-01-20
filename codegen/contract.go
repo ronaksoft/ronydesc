@@ -35,3 +35,7 @@ func (c Contract) NumRests() int {
 func (c Contract) Rest(i int) REST {
 	return c.rests[i]
 }
+
+func (c Contract) Rests() []REST {
+	return c.rests
+}
