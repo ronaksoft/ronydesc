@@ -3,6 +3,8 @@ package {{.PkgName}}
 import (
     "github.com/goccy/go-json"
     "github.com/ronaksoft/ronykit"
+    "github.com/ronaksoft/ronykit/std/service"
+    "github.com/ronaksoft/ronykit/std/contract"
 )
 
 /*
@@ -11,12 +13,35 @@ import (
 */
 
 {{range .Services}}
-    // {{.Name}}  {{.PkgPath}}
-    type {{.Name}} struct {
+    // I{{.Name}} define the interface which MUST be implemented.
+    type I{{.Name}} interface {
     {{range .Contracts -}}
-        // {{.Name}}
-        // Input: {{.Input.Name}} {{.Input.PkgPath}}
-        // Output: {{.Output.Name}} {{.Output.PkgPath}}
+        {{.Name}}(in *{{.Input.Name}}, out *{{.Output.Name}})
     {{end -}}
     }
+
+    {{$wrapperName := print (camel .Name) "Wrapper"}}
+    // $wrapperName
+    type {{$wrapperName}} struct {
+        svc I{{.Name}}
+    }
+
+    {{range .Contracts}}
+        func (x {{$wrapperName}}) {{camel .Name}}Contract() ronykit.Contract {
+            return contract.New().
+            SetSelector(
+            ).
+            SetHandler(x.svc.{{.Name}})
+        }
+    {{end}}
+
+    func (x {{$wrapperName}}) Service() ronykit.Service {
+        return service.New("{{.Name}}").
+            {{range .Contracts}}
+                AddContract(x.{{camel .Name}}Contract()).
+            {{end}}
+            SetPreHandlers()
+    }
+
 {{end}}
+

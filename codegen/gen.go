@@ -31,7 +31,9 @@ func Generate(cfg Config) error {
 			continue
 		}
 
-		t, err := template.ParseFS(stdTemplatesFS, fmt.Sprintf("templates/%s", de.Name()))
+		t, err := template.New(de.Name()).
+			Funcs(TemplateFunctions).
+			ParseFS(stdTemplatesFS, fmt.Sprintf("templates/%s", de.Name()))
 		if err != nil {
 			return err
 		}
@@ -41,7 +43,7 @@ func Generate(cfg Config) error {
 		if err != nil {
 			return err
 		}
-		err = t.Funcs(TemplateFunctions).Execute(out, arg)
+		err = t.Execute(out, arg)
 		if err != nil {
 			return err
 		}

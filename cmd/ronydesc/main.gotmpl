@@ -3,7 +3,7 @@ package main
 // This code is auto-generated
 
 import (
-	"github.com/ronaksoft/ronydesc/codegen"
+    "github.com/ronaksoft/ronydesc/codegen"
 	"github.com/ronaksoft/ronydesc/desc"
     x "{{.ImportPath}}"
 )
@@ -13,12 +13,12 @@ func main() {
         DstPkgName: "{{.DstPkgName}}",
         DstFolderPath: "{{.DstFolderPath}}",
         Messages: []desc.IMessage{
-            {{- range .Messages}}
+            {{- range .Messages }}
                 x.{{.}},
             {{- end }}
         },
         Services: []desc.IService{
-            {{- range .Services -}}
+            {{- range .Services }}
                 x.{{.}},
             {{- end }}
         },

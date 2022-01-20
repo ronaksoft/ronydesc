@@ -83,7 +83,10 @@ var RootCmd = &cobra.Command{
 			return err
 		}
 
-		err = exec.Command("go", "run", outName).Run()
+		cmdd := exec.Command("go", "run", outName)
+		cmdd.Stderr = os.Stderr
+
+		err = cmdd.Run()
 		if err != nil {
 			return err
 		}
