@@ -28,6 +28,7 @@ type EchoResponse struct {
 	RandomInt int32     `json:"randomInt" `
 	Sub       SubType   `json:"sub" `
 	Subs      []SubType `json:"subs" `
+	PtrSub    *SubType  `json:"ptrSub" `
 }
 
 func (x *EchoResponse) Marshal() ([]byte, error) {

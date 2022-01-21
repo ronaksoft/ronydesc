@@ -4,7 +4,7 @@ go 1.17
 
 require (
 	github.com/go-openapi/inflect v0.19.0
-	github.com/goccy/go-json v0.9.3
+	github.com/goccy/go-json v0.9.4
 	github.com/ronaksoft/ronykit v0.0.0-20220118130138-3f69fbd469be
 	github.com/spf13/cobra v1.3.0
 )

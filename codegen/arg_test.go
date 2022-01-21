@@ -6,7 +6,7 @@ import (
 
 	"github.com/ronaksoft/ronydesc/codegen"
 	"github.com/ronaksoft/ronydesc/desc"
-	"github.com/ronaksoft/ronydesc/internal/example/ex1"
+	"github.com/ronaksoft/ronydesc/internal/example/schema/ex1"
 )
 
 func TestGen(t *testing.T) {
