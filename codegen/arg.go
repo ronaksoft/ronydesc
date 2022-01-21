@@ -58,7 +58,11 @@ func (arg *Arg) extractContract(c desc.Contract) Contract {
 	return contract
 }
 
-func (arg *Arg) extractMessage(m interface{}) Message {
+func (arg *Arg) extractMessage(m interface{}) *Message {
+	if m == nil {
+		return nil
+	}
+	
 	rType := reflect.TypeOf(m)
 
 	msg := Message{
@@ -91,7 +95,7 @@ func (arg *Arg) extractMessage(m interface{}) Message {
 
 	arg.messages[msg.name] = msg
 
-	return msg
+	return &msg
 }
 
 func (arg *Arg) NumServices() int {

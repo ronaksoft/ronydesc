@@ -7,8 +7,8 @@ type REST struct {
 
 type Contract struct {
 	name   string
-	input  Message
-	output Message
+	input  *Message
+	output *Message
 	rests  []REST
 }
 
@@ -16,11 +16,11 @@ func (c Contract) Name() string {
 	return c.name
 }
 
-func (c Contract) Input() Message {
+func (c Contract) Input() *Message {
 	return c.input
 }
 
-func (c Contract) Output() Message {
+func (c Contract) Output() *Message {
 	return c.output
 }
 
