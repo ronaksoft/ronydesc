@@ -7,7 +7,6 @@ package codegen
 import (
 	"errors"
 	"fmt"
-	"github.com/ronaksoft/ronydesc/internal/utils"
 	"go/token"
 	"path/filepath"
 	"reflect"
@@ -18,6 +17,7 @@ import (
 	"unicode"
 
 	"github.com/go-openapi/inflect"
+	"github.com/ronaksoft/ronydesc/internal/utils"
 )
 
 var (

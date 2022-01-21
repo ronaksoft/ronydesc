@@ -62,7 +62,7 @@ func (arg *Arg) extractMessage(m interface{}) *Message {
 	if m == nil {
 		return nil
 	}
-	
+
 	rType := reflect.TypeOf(m)
 
 	msg := Message{
