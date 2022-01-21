@@ -79,18 +79,27 @@ func (arg *Arg) extractMessage(m interface{}) *Message {
 		switch field.Type.Kind() {
 		case reflect.Slice:
 			typ = fmt.Sprintf("[]%s", field.Type.Elem().Name())
-		default:
+		case reflect.Ptr:
+			typ = fmt.Sprintf("*%s", field.Type.Elem().Name())
+		case reflect.String, reflect.Float64, reflect.Float32,
+			reflect.Int, reflect.Int32, reflect.Int64, reflect.Int8, reflect.Int16,
+			reflect.Uint, reflect.Uint32, reflect.Uint64, reflect.Uint8, reflect.Uint16,
+			reflect.Bool, reflect.Struct:
 			typ = field.Type.Name()
+		default:
+			typ = ""
 		}
 
-		msg.fields = append(
-			msg.fields,
-			Field{
-				name: field.Name,
-				typ:  typ,
-				tag:  field.Tag,
-			},
-		)
+		if typ != "" {
+			msg.fields = append(
+				msg.fields,
+				Field{
+					name: field.Name,
+					typ:  typ,
+					tag:  field.Tag,
+				},
+			)
+		}
 	}
 
 	arg.messages[msg.name] = msg

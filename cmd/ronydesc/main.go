@@ -104,6 +104,20 @@ var RootCmd = &cobra.Command{
 			return err
 		}
 
+		cmdd = exec.Command("go", "mod", "tidy")
+		cmdd.Stderr = os.Stderr
+		err = cmdd.Run()
+		if err != nil {
+			return err
+		}
+
+		cmdd = exec.Command("go", "mod", "verify")
+		cmdd.Stderr = os.Stderr
+		err = cmdd.Run()
+		if err != nil {
+			return err
+		}
+
 		cmdd = exec.Command("go", "fmt", "./...")
 		cmdd.Stderr = os.Stderr
 		err = cmdd.Run()
